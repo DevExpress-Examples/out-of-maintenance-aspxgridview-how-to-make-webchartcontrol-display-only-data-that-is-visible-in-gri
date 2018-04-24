@@ -22,11 +22,13 @@ Partial Public Class _Default
 
     Protected Sub Page_PreRender(ByVal sender As Object, ByVal e As EventArgs)
         Dim list As New List(Of nwind.Products)()
-        For i As Integer = ASPxGridView1.VisibleStartIndex To (ASPxGridView1.SettingsPager.PageSize + ASPxGridView1.VisibleStartIndex) - 1
+        Dim i As Integer = ASPxGridView1.VisibleStartIndex
+        Do While i < ASPxGridView1.SettingsPager.PageSize + ASPxGridView1.VisibleStartIndex
             If Not ASPxGridView1.IsGroupRow(i) Then
                 list.Add(CType(ASPxGridView1.GetRow(i), nwind.Products))
             End If
-        Next i
+            i += 1
+        Loop
         WebChartControl1.DataSource = list
         WebChartControl1.DataBind()
     End Sub
