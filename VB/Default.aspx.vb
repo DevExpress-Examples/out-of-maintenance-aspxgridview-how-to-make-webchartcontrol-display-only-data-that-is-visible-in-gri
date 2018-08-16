@@ -1,4 +1,6 @@
-﻿Imports System
+﻿Option Infer On
+
+Imports System
 Imports System.Data
 Imports System.Configuration
 Imports System.Web
@@ -16,21 +18,31 @@ Partial Public Class _Default
     Protected session1 As Session
 
     Protected Sub Page_Init(ByVal sender As Object, ByVal e As EventArgs)
-        session1 = New Session()
-        XpoDataSource1.Session = session1
+        ASPxGridView1.JSProperties("cpCallbackName") = String.Empty
     End Sub
-
     Protected Sub Page_PreRender(ByVal sender As Object, ByVal e As EventArgs)
-        Dim list As New List(Of nwind.Products)()
-        Dim i As Integer = ASPxGridView1.VisibleStartIndex
-        Do While i < ASPxGridView1.SettingsPager.PageSize + ASPxGridView1.VisibleStartIndex
+        If Not IsPostBack Then
+            Session("DataSource") = AccessDataSource1
+        End If
+        If TypeOf Session("DataSource") Is AccessDataSource Then
+            WebChartControl1.DataSource = DirectCast(Session("DataSource"), AccessDataSource)
+        Else
+            WebChartControl1.DataSource = DirectCast(Session("DataSource"), List(Of DataRowView))
+        End If
+        WebChartControl1.DataBind()
+    End Sub
+    Protected Sub ASPxGridView1_AfterPerformCallback(ByVal sender As Object, ByVal e As DevExpress.Web.ASPxGridViewAfterPerformCallbackEventArgs)
+        ASPxGridView1.JSProperties("cpCallbackName") = e.CallbackName
+    End Sub
+    Protected Sub WebChartControl1_CustomCallback(ByVal sender As Object, ByVal e As DevExpress.XtraCharts.Web.CustomCallbackEventArgs)
+        Dim list = New List(Of DataRowView)()
+        For i As Integer = 0 To ASPxGridView1.VisibleRowCount - 1
             If Not ASPxGridView1.IsGroupRow(i) Then
-                list.Add(CType(ASPxGridView1.GetRow(i), nwind.Products))
+                list.Add(CType(ASPxGridView1.GetRow(i), DataRowView))
             End If
-            i += 1
-        Loop
+        Next i
+        Session("DataSource") = list
         WebChartControl1.DataSource = list
         WebChartControl1.DataBind()
     End Sub
-
 End Class
