@@ -1,6 +1,6 @@
 # ASPxGridView - How to make WebChartControl display only data that is visible in grid
 <!-- run online -->
-**[[Run Online]](https://codecentral.devexpress.com/t177863)**
+**[[Run Online]](https://codecentral.devexpress.com/t177863/)**
 <!-- run online end -->
 
 
